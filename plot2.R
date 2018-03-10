@@ -1,0 +1,24 @@
+install.packages("readr")
+install.packages("dplyr")
+install.packages("tidyr")
+install.packages("lubridate")
+library(readr)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+
+setwd("~/R_WorkDir/Coursera/ExploratoryDataAnalysis/ExData_Plotting1")
+filename <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(filename, "elecdata_full")
+elecdata <- unzip("elecdata_full")
+
+workingdata <- read_delim(elecdata, delim = ";")
+#is.data.frame(workingdata)
+workingdata <- workingdata %>% 
+  mutate(DateTime = dmy_hms(paste(Date, Time, collapse = NULL)), Date = dmy(Date), Time = hms(Time)) %>% 
+  filter(Date >= "2007-02-01" & Date <= "2007-02-02")
+
+png("plot2.png", width = 480, height = 480, bg = "white")
+with(workingdata, plot(DateTime, Global_active_power, type = "l", xlab = "", ylab = "Global Active Power (kilowatts)"))
+dev.off()
+
